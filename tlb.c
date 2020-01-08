@@ -37,6 +37,7 @@ int main(){
 		TLB[i].marco=((2+i)%4);
 	};
 
+	printf("SOY TLB, HIJO DE KERNELTYR\n\n");
 	printTLB(TLB);
 
 	//Otra parte del pipe

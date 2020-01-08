@@ -19,27 +19,28 @@ int main(){
 	if(pidC > 0)
 	{
 		printf("KERNELTYR: PID_hijo %d\n", pidC);
+		int fd;
+		char buffer[] = "msg 1 ...";
+		// 1º Crear el pipe a /tmp/FIFOTLB
+		// 0666 permiso de escritura
+		mkfifo("/tmp/FIFOTLB", 0666);
+		fd = open("/tmp/FIFOTLB", O_WRONLY);
+
+		gets(buffer);
 
 
+		write(fd, buffer, sizeof(buffer));
+
+		sleep(2);
+		close(fd);
 	}
 
 	//==0 Se esta ejecutando el hijo
 	else if(pidC == 0)
 	{
-		// int fd;
-		// char buffer[] = "msg 1 ...";
-		//1º Crear el pipe a /tmp/FIFOTLB
-		//0666 permiso de escritura
-		// mkfifo("/tmp/FIFOTLB", 0666);
-		// fd = open("/tmp/FIFOTLB", O_WRONLY);
-		// write(fd, buffer, sizeof(buffer));
+		execv("./tlb", NULL);
 
 		printf("HIJO: PID_hijo %d\n", getpid());
-
-		// execv("./path", NULL);
-		execv("./test", NULL);
-
-		// close(fd);
 	}
 
 	//-1 Ha fallado
