@@ -2,8 +2,13 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <string.h>
+#include <sys/types.h>
+#include <signal.h>
 
-int main(){
+int TAM = 4;
+
+int main(int argc, char** argv ){
 
 	pid_t pidC;
 
@@ -11,36 +16,52 @@ int main(){
 	printf("KERNELTYR: PID_kerneltyr %d\n", getpid());
 
 	//Aqui empieza el proceso hijo
-
 	pidC = fork();
 	// printf("proc. PID = %d, pidC = %d ejecutandose \n", getpid(), pidC);
-
+		
 	//>O Se esta ejecutando el padre
 	if(pidC > 0)
 	{
 		printf("KERNELTYR: PID_hijo %d\n", pidC);
-		int fd;
-		char buffer[] = "msg 1 ...";
+			
+		//Declaramos y abrimos fichero
+		FILE *fichero;
+		fichero = fopen("accesos_memoria.txt", "r");	
+		
 		// 1º Crear el pipe a /tmp/FIFOTLB
 		// 0666 permiso de escritura
+		int fd;
 		mkfifo("/tmp/FIFOTLB", 0666);
 		fd = open("/tmp/FIFOTLB", O_WRONLY);
 
-		gets(buffer);
-
-
-		write(fd, buffer, sizeof(buffer));
-
-		sleep(2);
+		char * buffer;
+		size_t tam = 0;
+		
+		while(getline(&buffer, &tam, fichero) != -1){
+			
+			write(fd, buffer, TAM);
+			sleep(2);
+		}
+		
+			
+		fclose(fichero);
 		close(fd);
+		
+		kill(pidC, SIGUSR2);
+		
 	}
 
 	//==0 Se esta ejecutando el hijo
 	else if(pidC == 0)
 	{
-		execv("./tlb", NULL);
-
-		printf("HIJO: PID_hijo %d\n", getpid());
+		
+		char * args[] ={"./tlb", NULL};
+		
+		if(execvp(args[0], args) != 0){
+			printf("No se puede ejecutar");
+			return 1;
+		}
+			
 	}
 
 	//-1 Ha fallado
