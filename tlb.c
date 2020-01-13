@@ -3,10 +3,10 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
-int TAM = 4;
+#define TAM 4
+#define MAX_LINE 100
 int tiempoglobal=0;
 int numfallos=0;
-#define MAX_LINE 100
 
 typedef struct {
 short int pagina;
@@ -16,17 +16,16 @@ int tiempo;
 } T_TLB;
 
 void printTLB(T_TLB *TLB){
+	int i = 0;
 
-	int i=0;
-
-	for(i=0; i<TAM ; i++){
+	for(i = 0; i < TAM ; i++){
 		printf("| p:%d | m:%d | v:%d | t:%d |\n", TLB[i].pagina, TLB[i].marco, TLB[i].valida, TLB[i].tiempo);
 	}
 
-	}
+}
 
 // Inicializar pipe
-int init_pipe(int *pipe) {
+int init_pipe(int* pipe) {
     if (*pipe = open("/tmp/FIFOTLB", O_RDONLY) < 0) {
         return -1;
     }
@@ -41,7 +40,7 @@ int init_pipe(int *pipe) {
 // }
 
 int main(){
-	int i=0;
+	int i = 0;
 	T_TLB TLB[TAM];
 
 	for(i=0; i<TAM ; i++){
@@ -69,19 +68,11 @@ int main(){
 
 		tiempoglobal++;
 	}
-
-
-
 	printf("%d",tiempoglobal);
-
 
 	close(fd);
 	printf("He terminao\n");
 	kill(getppid(), SIGCHLD);
-
-
-
-
 
 return 0;
 }
