@@ -56,23 +56,23 @@ int main(){
 	int fd;
 	char buffer[MAX_LINE];
 
-	fd = open("/tmp/FIFOTLB", O_RDONLY);
+	// fd = open("/tmp/FIFOTLB", O_RDONLY);
 
 	if (init_pipe(&fd) < 0)
-		printf("ERROR: No se puede abrir FIFOTLB\n");
-	printf("fd: %d\n", fd);
+		printf("TLB: ERROR: No se puede abrir FIFOTLB\n");
+	printf("TLB: fd: %d\n", fd);
 
 	while(read(fd, buffer, MAX_LINE)){
-		printf("%s\n",buffer);
-		printf("%s\n", buffer);
+		printf("TLB: %s\n",buffer);
 
 		tiempoglobal++;
+		sleep(2);
 	}
-	printf("%d",tiempoglobal);
+	printf("TLB: %d",tiempoglobal);
 
 	close(fd);
-	printf("He terminao\n");
-	kill(getppid(), SIGCHLD);
+	printf("TLB: He terminao\n");
+	// kill(getppid(), SIGCHLD);
 
 return 0;
 }
