@@ -1,2 +1,2 @@
 # TLB-sistemas
-Simulacion de TLB para clase de Galgarra
+Simulacion de TLB para clase de Sistemas Operativos
